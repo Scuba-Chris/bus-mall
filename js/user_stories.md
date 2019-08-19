@@ -1,0 +1,1 @@
+In this bus-mall application the user is being asked what product out of 3 products they prefer. They are given 3 random product pictures to choose from at. After clicking on a product picture, a new set of 3 pictures are displayed on the screen. The user is asked to choose there prefered product 25 times.
