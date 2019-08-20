@@ -1,4 +1,3 @@
-
 'use strict';
 
 var pictures = [];
@@ -39,22 +38,18 @@ new ProductPicture('wine_glass','/assets/wine-glass.jpg');
 
 function choosingRandom(){ 
   
-  for (var i = 0; i < 3; ){
-    var randomIndex = Math.floor((Math.random() * 20 ));
-    if (randomImages.includes(randomIndex) && !previous.includes(randomIndex)){
+  for (var i = 0; i < 3; i++){
+    var randomIndex = Math.floor((Math.random() * pictures.length ));
+    if (!randomImages.includes(randomIndex) && !previous.includes(randomIndex)){
       randomImages.push(randomIndex);
-      randomIndex[i].push(previous);
-      // while(randomImages.length < 3){
-
-
-      // }
+    if 
     }
   }
 }
 choosingRandom();
 
-console.log("Current Random Images: " +randomImages);
-console.log("Previous " +previous);
+console.log('Current Random Images: ' + randomImages);
+console.log('Previous ' + previous);
 
 // function populateRandomImages() {
 //   for ( var i = 0; i < randomImages.length; i++){
