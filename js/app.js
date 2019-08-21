@@ -1,15 +1,16 @@
 'use strict';
 
+var container = document.getElementById('image-container');
 var pictures = [];
-var choosen = [];
-var randomImages = [];
-var previous = [];
+var thisSet = {};
+var previousSet = {};
+var picked = 0;
 
 function ProductPicture( name, url ){
   this.name = name;
   this.src = url;
-  this.timesChosen = [];
-  this.timesShown = [];
+  this.timesChoosen = 0;
+  this.timesShown = 0;
   pictures.push(this);
 }
 
@@ -18,7 +19,7 @@ new ProductPicture('banana', '/assets/banana.jpg');
 new ProductPicture('bathroom','/assets/bathroom.jpg');
 new ProductPicture('boots','/assets/boots.jpg');
 new ProductPicture('breakfast','/assets/breakfast.jpg');
-new ProductPicture('bubblegum','/bubblegum.jpg');
+new ProductPicture('bubblegum','/assets/bubblegum.jpg');
 new ProductPicture('chair','/assets/chair.jpg');
 new ProductPicture('cthulhu', '/assets/cthulhu.jpg');
 new ProductPicture('dog_duck','/assets/dog-duck.jpg');
@@ -34,27 +35,75 @@ new ProductPicture('usb','/assets/usb.gif');
 new ProductPicture('water_can','/assets/water-can.jpg');
 new ProductPicture('wine_glass','/assets/wine-glass.jpg');
 
-// chosing random cards
 
-function choosingRandom(){ 
-  
-  for (var i = 0; i < 3; i++){
-    var randomIndex = Math.floor((Math.random() * pictures.length ));
-    if (!randomImages.includes(randomIndex) && !previous.includes(randomIndex)){
-      randomImages.push(randomIndex);
-    if 
-    }
+//adds to timesSeen count
+ProductPicture.prototype.updateViews = function(){
+  this.timesShown++;
+};
+
+//adds to timesChoosen count
+ProductPicture.prototype.updateChoosen = function(){
+  this.timesChoosen++;
+};
+
+//sets up all of the img containers and creates an img tag for them in the DOM
+//pulled the pics from the assets folder
+function setupImageContainer(){
+  container.innerHTML = '';
+  for(var i = 0; i < 3 ;i++){
+    var currentPicture = getRandomUniqueImage();
+    var img = document.createElement('img');
+    img.id = currentPicture.name;
+    img.src = currentPicture.src;
+    container.appendChild(img);
   }
 }
-choosingRandom();
 
-console.log('Current Random Images: ' + randomImages);
-console.log('Previous ' + previous);
+//creates the event listener to run other functions
+function setupListener(){
+  container.addEventListener('click', clickHandler);
+}
 
-// function populateRandomImages() {
-//   for ( var i = 0; i < randomImages.length; i++){
-//   console.log(pictures[i]);
-// }
-// }
-// populateRandomImages();
+//uses the event to know what img has been 'click'ed on and increases the number in the updateChoosen object
+function clickHandler(event){
+  console.log(event.target);
+  var imageName = event.target.id;
+  for( var i = 0; i < pictures.length; i++){
+    if(pictures[i].name === imageName){
+      pictures[i].updateChoosen();
+      picked++;
+    }
+  }
 
+  if( picked === 25 ){
+    showResults();
+  }
+
+  previousSet = thisSet;
+  thisSet = {};
+  setupImageContainer();
+}
+
+function getRandomUniqueImage(){
+  var found = false;
+
+  while(!found){
+    var n = Math.floor(Math.random() * pictures.length);
+    if (!thisSet[n] && !previousSet[n]){
+      found = pictures[n];
+      pictures[n].updateViews();
+      thisSet[n] = true;
+    }
+  }
+  console.log(thisSet);
+  console.log(previousSet);
+  return found;
+}
+
+function showResults(){
+  container.removeEventListener('click', clickHandler);
+}
+
+setupImageContainer(3);
+setupListener();
+getRandomUniqueImage();
