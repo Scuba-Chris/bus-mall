@@ -9,10 +9,12 @@ var picked = 0;
 function ProductPicture( name, url ){
   this.name = name;
   this.src = url;
-  this.timesChoosen = 0;
+  this.timesChosen = 0;
   this.timesShown = 0;
   pictures.push(this);
 }
+
+
 
 new ProductPicture('bag', '/assets/bag.jpg');
 new ProductPicture('banana', '/assets/banana.jpg');
@@ -35,15 +37,26 @@ new ProductPicture('usb','/assets/usb.gif');
 new ProductPicture('water_can','/assets/water-can.jpg');
 new ProductPicture('wine_glass','/assets/wine-glass.jpg');
 
+function setLocalDataBackUp(){
+  var getData = localStorage.getItem('data');
+  var backToObject = JSON.parse(getData);
 
-//adds to timesSeen count
+  for( var i = 0; i < backToObject.length; i++){
+    pictures[i].timesChosen += backToObject[i];
+  }
+
+}
+setLocalDataBackUp();
+
+
+//adds to timesSeen count 
 ProductPicture.prototype.updateViews = function(){
   this.timesShown++;
 };
 
 //adds to timesChoosen count
-ProductPicture.prototype.updateChoosen = function(){
-  this.timesChoosen++;
+ProductPicture.prototype.updateChosen = function(){
+  this.timesChosen++;
 };
 
 //sets up all of the img containers and creates an img tag for them in the DOM
@@ -53,7 +66,7 @@ function setupImageContainer(){
   for(var i = 0; i < 3 ;i++){
     var currentPicture = getRandomUniqueImage();
     var img = document.createElement('img');
-    img.id = currentPicture.name;
+    img.alt = currentPicture.name;
     img.src = currentPicture.src;
     container.appendChild(img);
   }
@@ -64,19 +77,29 @@ function setupListener(){
   container.addEventListener('click', clickHandler);
 }
 
+function removeListener(){
+  container.removeEventListener('click', clickHandler);
+}
+
 //uses the event to know what img has been 'click'ed on and increases the number in the updateChoosen object
 function clickHandler(event){
   console.log(event.target);
-  var imageName = event.target.id;
+  var imageName = event.target.alt;
   for( var i = 0; i < pictures.length; i++){
     if(pictures[i].name === imageName){
-      pictures[i].updateChoosen();
+      pictures[i].updateChosen();
       picked++;
     }
   }
 
   if( picked === 25 ){
+    removeListener();
+    chartData();
     showResults();
+    var dataAsString = JSON.stringify(pictureData);
+    localStorage.setItem('data', dataAsString);
+    var nameAsString = JSON.stringify(labels);
+    localStorage.setItem('pictures', nameAsString);
   }
 
   previousSet = thisSet;
@@ -95,8 +118,7 @@ function getRandomUniqueImage(){
       thisSet[n] = true;
     }
   }
-  console.log(thisSet);
-  console.log(previousSet);
+
   return found;
 }
 
@@ -105,33 +127,35 @@ setupImageContainer(3);
 setupListener();
 getRandomUniqueImage();
 
+var pictureData = [];
+var labels = [];
+var backgroundColor = [];
+
+function chartData(){
+  for( var i = 0; i < pictures.length; i++){
+    pictureData.push(pictures[i].timesChosen);
+    labels.push(pictures[i].name);
+    backgroundColor.push('#0000FF');
+  }
+
+}
+
+
+
 function showResults(){
-  container.removeEventListener('click', clickHandler);
- 
   var ctx = document.getElementById('myChart').getContext('2d');
-  container.appendChild(myChart);
   var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: pictures.name,
+      labels: labels,
       datasets: [{
         label: 'product Votes',
-        data: pictures.timesChoosen,
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
+        data: pictureData,
+        backgroundColor: backgroundColor
+
+        ,
+        borderColor: [ '#0000FF', 
+
         ],
         borderWidth: 1
       }]
@@ -146,8 +170,8 @@ function showResults(){
       }
     }
   });
-
 }
+
 
 
 
