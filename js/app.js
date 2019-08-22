@@ -49,7 +49,7 @@ function setLocalDataBackUp(){
 setLocalDataBackUp();
 
 
-//adds to timesSeen count 
+//adds to timesSeen count
 ProductPicture.prototype.updateViews = function(){
   this.timesShown++;
 };
@@ -154,7 +154,7 @@ function showResults(){
         backgroundColor: backgroundColor
 
         ,
-        borderColor: [ '#0000FF', 
+        borderColor: [ '#0000FF',
 
         ],
         borderWidth: 1
