@@ -1,27 +1,32 @@
-*{
-  outline: 1px dotted orange;
+#main_title {
+    background-color: gray;
+    line-height: 100px;
+    height: 100px;
+    font-style: italic;
+    font-size: 3em;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    text-align: center;
 }
 
-#main_title{
-  background-color: gray;
-  line-height: 100px;
-  height: 100px;
-  font-style: italic;
-  font-size: 3em;
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: bold;
-  text-align: center;
+section {
+    width: 1060px;
+    margin: 0 auto;
 }
 
-section{
-  width: 1200px;
-  margin: auto;
+section>img {
+    text-align: center;
+    width: 300px;
+    height: 300px;
+    padding: 20px 20px 40px 20px;
 }
 
-section > img {
-  
-  text-align: center;
-  width: 300px;
-  height: 300px;
-  padding: 40px 40px 80px 40px;
+#myChart {
+    width: 400px;
+    height: 400px;
+}
+
+#main {
+    width: 400px;
+    height: 400px;
 }
